@@ -1,11 +1,12 @@
 
-
+import Signup from "./pages/Signup"
 
 function App() {
 
   return (
-    <>
-     
+   <>
+   hi
+   <Signup/>
     </>
   )
 }
