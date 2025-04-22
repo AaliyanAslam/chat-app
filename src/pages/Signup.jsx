@@ -5,6 +5,8 @@ import { auth } from '../lib/firebase';
 import { setUser } from '../features/auth/authSlice';
 import { Link } from 'react-router-dom';
 import Loader from "../components/Loader";
+import {doc , setDoc} from "firebase/firestore"
+import {db} from "../lib/firebase"
 
 const Signup = () => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -25,6 +27,12 @@ const Signup = () => {
         setLoading(true)
       const res = await createUserWithEmailAndPassword(auth, form.email, form.password);
       await sendEmailVerification(res.user);
+await setDoc(doc(db, "users" , res.user.uid),{
+  uid: res.user.uid,
+  email: res.user.email,
+  createdAt: new Date()
+})
+
       
       dispatch(setUser({
         uid: res.user.uid,

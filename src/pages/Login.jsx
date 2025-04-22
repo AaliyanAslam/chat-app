@@ -33,24 +33,22 @@ setMessege(true)
 
       navigate("/dashboard");
     } catch (err) {
-      //   alert(err.message);
-      // err.message = "Something went wrong !"
+   
       setError(true && err.message);
     } finally {
       setLoading(false);
     }
     useEffect(() => {
-        if (user) {
+        if (res.user) {
           navigate("/dashboard");
         } else {
             navigate("login")
         }
-      }, [user, navigate]);
+      }, [res.user, navigate]);
     
   };
 
 
-  // ...rest of your login form code
 
 
   
