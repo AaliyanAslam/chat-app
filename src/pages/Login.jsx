@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { useDispatch } from "react-redux";
@@ -39,7 +39,21 @@ setMessege(true)
     } finally {
       setLoading(false);
     }
+    useEffect(() => {
+        if (user) {
+          navigate("/dashboard");
+        } else {
+            navigate("login")
+        }
+      }, [user, navigate]);
+    
   };
+
+
+  // ...rest of your login form code
+
+
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
