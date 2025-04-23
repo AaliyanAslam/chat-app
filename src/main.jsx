@@ -8,34 +8,37 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Signup from "./pages/Signup.jsx";
 import Login from "./pages/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
-import protectedRoute from "./components/protectedRoute.jsx";
+import ProtectedRoute from "./components/protectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
-  },
-  {
-    path: "signup",
-    element: <Signup />,
-  },
-  {
-    path: "login",
-    element: <Login />,
-  },
-  {
-    path: "dashboard",
-    element: <Dashboard />,
-  },
-  {
-    path: "dashboard",
-    element: (
-      <protectedRoute>
-        <Dashboard />
-      </protectedRoute>
-    ),
+    element: <App />, // 👈 Wrap children inside App
+    children: [
+      {
+        index: true,
+        element: <Login />,
+      },
+      {
+        path: "signup",
+        element: <Signup />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "dashboard",
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
+      },
+    ],
   },
 ]);
+
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

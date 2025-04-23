@@ -1,4 +1,4 @@
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { useDispatch } from "react-redux";
@@ -13,8 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-    const [message, setMessege] = useState("")
-  
+  const [message, setMessege] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,31 +26,18 @@ const Login = () => {
           email: res.user.email,
         })
       );
-setMessege(true)
+      setMessege(true);
 
       setError(false);
 
       navigate("/dashboard");
     } catch (err) {
-   
       setError(true && err.message);
     } finally {
       setLoading(false);
     }
-    useEffect(() => {
-        if (res.user) {
-          navigate("/dashboard");
-        } else {
-            navigate("login")
-        }
-      }, [res.user, navigate]);
     
   };
-
-
-
-
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -86,7 +72,10 @@ setMessege(true)
               required
             />
           </div>
-          <div className="text-green-600">   {message? "Account created Successfully!" : ""}</div>
+          <div className="text-green-600">
+       
+            {message ? "Account created Successfully!" : ""}
+          </div>
           <div className="text-red-600"> {error}</div>
 
           <button type="submit" className="btn btn-neutral w-full">
