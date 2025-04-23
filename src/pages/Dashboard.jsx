@@ -1,15 +1,21 @@
-import React , {useState} from "react";
+import React, { useState } from "react";
 import { signOut, getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { setUser } from "../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "../components/Sidebar";
+import Chatbox from "../components/Chatbox";
+import { FaLevelUpAlt } from "react-icons/fa";
+import { IoMdLogOut } from "react-icons/io";
 
 const Dashboard = () => {
-  const user = useSelector((state) => state.auth.user);
+  const currentUser = useSelector((state) => state.auth.user);
+  console.log(currentUser.name);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [selectedUser , setSelectedUser] = useState(null)
+  const [selectedUser, setSelectedUser] = useState(null);
+
   const handleLogout = async () => {
     const auth = getAuth();
     await signOut(auth);
@@ -17,41 +23,38 @@ const Dashboard = () => {
     navigate("/login", { replace: true });
   };
 
-  const handleUserSelect =(user)=> {
-    setSelectedUser(user)
-    console.log("selected User " , user);
-    
-
-
-
-  }
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
+    console.log("Selected User:", user);
+  };
 
   return (
-    <>
-      <div className="p-3 flex justify-between items-center">
-        <h1 className="text-2xl font-bold mb-4">Welcome to Dashboard</h1>
-        <div>Welcome,{user?.email}</div>
+    <div className="min-h-screen flex flex-col bg-white text-black font-sans">
+      {/* Header */}
+      <header className="p-4 border-b border-gray-200 flex justify-between items-center bg-white shadow-sm">
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          ChatUp <FaLevelUpAlt className="text-black-600" />
+        </h1>
+        <div className="text-gray-600">Welcome, {currentUser?.name}</div>
         <button
           onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded text-sm"
+          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition text-sm flex items-center gap-1"
         >
-          Logout
+          Logout <IoMdLogOut />
         </button>
-      </div>
-      <div className="flex h-screen">
-      <Sidebar onUserSelect={handleUserSelect} />
-      <div className="flex-1 p-4">
-        {selectedUser ? (
-          <div>
-            <h2 className="text-xl font-bold mb-2">Chat with <span className="text-sm font-normal">{selectedUser.email}</span></h2>
-            {/* Chat screen yahan aayegi */}
-          </div>
-        ) : (
-          <p>Select a user to start chatting.</p>
-        )}
-      </div>
+      </header>
+
+      {/* Main Layout */}
+      <main className="flex flex-1 overflow-hidden">
+        {/* Sidebar */}
+        <Sidebar onUserSelect={handleUserSelect} />
+
+        {/* Chatbox Area */}
+        <div className="flex-1 bg-gray-50 p-4">
+          <Chatbox selectedUser={selectedUser} currentUser={currentUser} />
+        </div>
+      </main>
     </div>
-    </>
   );
 };
 

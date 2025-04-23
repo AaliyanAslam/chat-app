@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../features/auth/authSlice";
 import { useNavigate, Link } from "react-router-dom";
 import Loader from "../components/Loader";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -14,29 +16,31 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [message, setMessege] = useState("");
-
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
       const res = await signInWithEmailAndPassword(auth, email, password);
-      dispatch(
-        setUser({
+      
+      const userDoc = await getDoc(doc(db, "users", res.user.uid));
+  
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        dispatch(setUser({
           uid: res.user.uid,
           email: res.user.email,
-        })
-      );
+          name: userData.name, // now name will be available in Dashboard
+        }));
+      }
+  
       setMessege(true);
-
       setError(false);
-
       navigate("/dashboard");
     } catch (err) {
-      setError(true && err.message);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
-    
   };
 
   return (
