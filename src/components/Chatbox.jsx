@@ -13,6 +13,7 @@ const Chatbox = ({ selectedUser, currentUser }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const chatContainerRef = useRef(null);
+  const inputRef = useRef(null);
 
   const chatId =
     selectedUser &&
@@ -56,32 +57,33 @@ const Chatbox = ({ selectedUser, currentUser }) => {
     });
 
     setNewMessage('');
+    inputRef.current?.focus();
   };
 
   if (!selectedUser) {
     return (
-      <div className="flex items-center justify-center h-full text-gray-500">
-        Select a user to start chatting
+      <div className="flex items-center justify-center h-full text-gray-400 text-lg">
+        Select a user to start chatting 💬
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full bg-white ">
+    <div className="flex flex-col h-full bg-white">
       {/* Header */}
-      <div className="px-4 py-3  text-lg font-semibold text-gray-700">
-        Chat with {selectedUser.email}
+      <div className="px-4 py-3 border-b text-lg font-semibold text-gray-700">
+        Chat with <span className="text-blue-500">{selectedUser.name || selectedUser.email}</span>
       </div>
 
       {/* Messages */}
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-2"
+        className="flex-1 overflow-y-auto px-2 md:px-4 py-4 space-y-3"
       >
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`max-w-xs md:max-w-sm lg:max-w-md px-4 py-2 rounded-lg text-sm ${
+            className={`max-w-[80%] px-4 py-2 rounded-lg text-sm transition-all duration-200 ${
               msg.sender === currentUser.uid
                 ? 'bg-blue-500 text-white self-end ml-auto'
                 : 'bg-gray-200 text-gray-900 self-start mr-auto'
@@ -95,10 +97,11 @@ const Chatbox = ({ selectedUser, currentUser }) => {
       {/* Input */}
       <form
         onSubmit={handleSend}
-        className="border-t p-3 flex gap-2 items-center"
+        className="border-t p-2 md:p-3 flex gap-2 items-center"
       >
         <input
           type="text"
+          ref={inputRef}
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type a message..."

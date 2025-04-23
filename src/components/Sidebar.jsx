@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { db } from "../lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useSelector } from "react-redux";
-import Loader from "../components/Loader"
+import Loader from "../components/Loader";
+import { X } from "lucide-react"; // close icon
 
-const Sidebar = ({ onUserSelect }) => {
+const Sidebar = ({ onUserSelect, isOpen, onClose }) => {
   const currentUser = useSelector((state) => state.auth.user);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,12 +37,24 @@ const Sidebar = ({ onUserSelect }) => {
   }, [currentUser?.uid]);
 
   return (
-    <aside className="w-full md:w-1/4 bg-white  h-screen p-4 overflow-y-auto shadow-md">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-800">Chats</h2>
+    <aside
+      className={`fixed md:static top-0 left-0 z-40 w-3/4 md:w-1/4 h-full bg-white p-4 shadow-md transform transition-transform duration-300 ease-in-out
+      ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+    >
+      {/* Close button (mobile only) */}
+      <div className="flex justify-between items-center mb-6 md:hidden">
+        <h2 className="text-2xl font-semibold text-gray-800">Chats</h2>
+        <button onClick={onClose} className="text-gray-600 hover:text-gray-800">
+          <X size={24} />
+        </button>
+      </div>
+
+      {/* Desktop heading */}
+      <h2 className="text-2xl font-semibold mb-6 text-gray-800 hidden md:block">Chats</h2>
 
       {loading ? (
         <div className="flex justify-center items-center h-40 text-gray-500">
-          <Loader/>
+          <Loader />
           Loading users...
         </div>
       ) : users.length === 0 ? (
@@ -51,7 +64,10 @@ const Sidebar = ({ onUserSelect }) => {
           {users.map((user) => (
             <li
               key={user.uid}
-              onClick={() => onUserSelect(user)}
+              onClick={() => {
+                onUserSelect(user);
+                onClose(); // close on mobile after select
+              }}
               className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
             >
               <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold">

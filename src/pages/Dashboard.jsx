@@ -9,6 +9,8 @@ import { FaLevelUpAlt } from "react-icons/fa";
 import { IoMdLogOut } from "react-icons/io";
 
 const Dashboard = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const currentUser = useSelector((state) => state.auth.user);
   console.log(currentUser.name);
   
@@ -32,13 +34,21 @@ const Dashboard = () => {
     <div className="min-h-screen flex flex-col bg-white text-black font-sans">
       {/* Header */}
       <header className="p-4 border-b border-gray-200 flex justify-between items-center bg-white shadow-sm">
-        <h1 className="text-2xl font-bold flex items-center gap-2">
+        {/* Mobile Sidebar Toggle */}
+<button
+  onClick={() => setSidebarOpen(true)}
+  className="md:hidden text-gray-600 hover:text-black mr-2"
+>
+  ☰
+</button>
+
+        <span className=" font-bold flex items-center gap-0 text-lg">
           ChatUp <FaLevelUpAlt className="text-black-600" />
-        </h1>
-        <div className="text-gray-600">Welcome, {currentUser?.name}</div>
+        </span>
+        <div className="text-gray-600 text-sm">Welcome, <span className="font-bold">{currentUser?.name}</span></div>
         <button
           onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition text-sm flex items-center gap-1"
+          className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded transition text-sm flex items-center gap-1"
         >
           Logout <IoMdLogOut />
         </button>
@@ -47,7 +57,13 @@ const Dashboard = () => {
       {/* Main Layout */}
       <main className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <Sidebar onUserSelect={handleUserSelect} />
+        <Sidebar
+  isOpen={sidebarOpen}
+  onUserSelect={handleUserSelect}
+  onClose={() => setSidebarOpen(false)}
+/>
+
+
 
         {/* Chatbox Area */}
         <div className="flex-1 bg-gray-50 p-4">
