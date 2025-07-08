@@ -18,26 +18,22 @@ const Dashboard = () => {
 
   const currentUser = useSelector((state) => state.auth.user);
 
-  // 🔐 Check Firebase Auth Status
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in
         const { displayName, email, uid, photoURL } = user;
         dispatch(setUser({
-          name: displayName || "No Name",
+          name: displayName || "User",
           email,
           uid,
           photoURL,
         }));
       } else {
-        // No user signed in, redirect to login
         dispatch(setUser(null));
         navigate("/login", { replace: true });
       }
     });
 
-    // Cleanup listener on unmount
     return () => unsubscribe();
   }, [auth, dispatch, navigate]);
 
@@ -54,9 +50,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-black font-sans">
-      {/* Header */}
       <header className="p-4 border-b border-gray-200 flex justify-between items-center bg-white shadow-sm">
-        {/* Mobile Sidebar Toggle */}
         <button
           onClick={() => setSidebarOpen(true)}
           className="md:hidden text-gray-600 hover:text-black mr-2"
@@ -80,16 +74,13 @@ const Dashboard = () => {
         </button>
       </header>
 
-      {/* Main Layout */}
       <main className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
         <Sidebar
           isOpen={sidebarOpen}
           onUserSelect={handleUserSelect}
           onClose={() => setSidebarOpen(false)}
         />
 
-        {/* Chatbox Area */}
         <div className="flex-1 bg-gray-50 p-4">
           <Chatbox selectedUser={selectedUser} currentUser={currentUser} />
         </div>
